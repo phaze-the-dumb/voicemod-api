@@ -1,8 +1,8 @@
 {
   "name": "voicemod",
   "version": "0.1.1",
-  "description": "",
-  "main": "src/main.js",
+  "description": "I am working on changing how the api interface works.",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,5 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "ws": "^8.13.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phaze-the-dumb/voicemod-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phaze-the-dumb/voicemod-api/issues"
+  },
+  "homepage": "https://github.com/phaze-the-dumb/voicemod-api#readme"
 }
