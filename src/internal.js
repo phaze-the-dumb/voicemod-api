@@ -5,7 +5,7 @@ const VM_PORTS = [ 59129, 20000, 39273, 42152, 43782, 46667, 35679, 37170, 38501
 const VM_EVENTS = [ 
   'licenseTypeChanged', 'getAllSoundboard', 'getActiveSoundboardProfile', 'getMemes',
   'voiceChangedEvent', 'toggleHearMyVoice', 'toggleVoiceChanger', 'toggleBackground',
-  'toggleMuteMic'
+  'toggleMuteMic', 'toggleMuteMemeForMe'
 ];
 
 class VoiceModInternal{
