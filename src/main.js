@@ -1,92 +1,74 @@
 const VoiceModInternal = require('./internal');
-const events = require('events');
 
-class VoiceMod extends events.EventEmitter {
+const VMUser = require('./classes/VMUser');
+const VMVoiceGroup = require('./classes/VMVoiceGroup');
+const VMVoice = require('./classes/VMVoice');
+
+/* 
+REMINDER TO FUTURE PHAZE
+- TTS APIS (you can probably reverse it with mitm proxy, since there's no documentation, also huggingface repo?)
+*/
+
+class VoiceMod{
   constructor(){
-    super();
-
     this.loaded = false;
     this.internal = null;
+
+    this.user = new VMUser();
+
+    this.voices = new VMVoiceGroup();
+    this.favouriteVoices = new VMVoiceGroup();
+    this.customVoices = new VMVoiceGroup();
+    this.newVoices = new VMVoiceGroup();
+    this.enabledVoices = new VMVoiceGroup();
+
+    this.currentVoice = new VMVoice(this);
+    this.rotaryVoiceExpires = -1;
   }
   init(){
     return new Promise(( res, rej ) => {
-      this.internal = new VoiceModInternal(this, { res, rej });
+      this.internal = new VoiceModInternal(this, { res: async () => {
+        await this.user.processInternal(this.internal);
+        await this.voices.processInternalAllVoices(this.internal);
+
+        this.favouriteVoices.processInternalFilter(this.voices, 'isFavourite');
+        this.customVoices.processInternalFilter(this.voices, 'isCustom');
+        this.newVoices.processInternalFilter(this.voices, 'isNew');
+
+        let rotVoiceTime = await this.internal.getRotatoryVoicesRemainingTime();
+
+        if(rotVoiceTime == -1)
+          this.rotaryVoiceExpires = -1
+        else
+          this.rotaryVoiceExpires = Date.now() + rotVoiceTime.remainingTime * 1000;
+
+        this.internal.on('voiceLoadedEvent', ( voice ) => {
+          this.currentVoice = this.voices.find(x => x.id === voice.voiceID);
+          this.currentVoice.parameters = voice.parameters;
+        });
+
+        this.internal.on('voiceParameterUpdated', ( e ) => {
+          let voice = this.voices.find(x => x.id === e.voiceId);
+          Object.values(voice.parameters).find(x => x.name === e.parameter.name).value = e.parameter.value;
+        })
+
+        res();
+      }, rej });
     })
   }
-  getUser(){
-    return this.internal.sendActionWithCallback('getUser', {});
+  reloadVoices(){
+    return new Promise(async (resolve, reject) => {
+      await this.voices.processInternalAllVoices(this.internal);
+
+      this.favouriteVoices.processInternalFilter(this.voices, 'isFavourite');
+      this.customVoices.processInternalFilter(this.voices, 'isCustom');
+      this.newVoices.processInternalFilter(this.voices, 'isNew');
+
+      resolve();
+    })
   }
-  getUserLicense(){
-    return this.internal.sendActionWithCallback('getUserLicense', {});
-  }
-  getRotatoryVoicesRemainingTime(){
-    return this.internal.sendActionWithCallback('getRotatoryVoicesRemainingTime', {});
-  }
-  getVoices(){
-    return this.internal.sendActionWithCallback('getVoices', {});
-  }
-  getCurrentVoice(){
-    return this.internal.sendActionWithCallback('getCurrentVoice', {});
-  }
-  getAllSoundboard(){
-    return this.internal.sendActionWithCallback('getAllSoundboard', {});
-  }
-  getMemes(){
-    return this.internal.sendActionWithCallback('getMemes', {});
-  }
-  getBitmapMeme( id ){
-    return this.internal.sendActionWithCallback('getBitmap', { memeId: id });
-  }
-  getBitmapVoice( id ){
-    return this.internal.sendActionWithCallback('getBitmap', { voiceID: id });
-  }
-  setVoice( id ){
-    this.internal.sendAction('loadVoice', { voiceID: id });
-  }
-  selectRandomVoice( type = 'AllVoices' ){
-    this.internal.sendAction('selectRandomVoice', { mode: type });
-  }
-  getHearMyselfStatus(){
-    return this.internal.sendActionWithCallback('getHearMyselfStatus', {}, 'toggleHearMyVoice');
-  }
-  toggleHearMyVoice(){
-    return this.internal.sendActionWithCallback('toggleHearMyVoice', {});
-  }
-  getVoiceChangerStatus(){
-    return this.internal.sendActionWithCallback('getVoiceChangerStatus', {}, 'toggleVoiceChanger');
-  }
-  toggleVoiceChanger(){
-    return this.internal.sendActionWithCallback('toggleVoiceChanger', {});
-  }
-  getBackgroundEffectStatus(){
-    return this.internal.sendActionWithCallback('getBackgroundEffectStatus', {}, 'toggleBackground');
-  }
-  toggleBackground(){
-    return this.internal.sendActionWithCallback('toggleBackground', {});
-  }
-  getMuteMicStatus(){
-    return this.internal.sendActionWithCallback('getMuteMicStatus', {}, 'toggleMuteMic');
-  }
-  toggleMuteMic(){
-    return this.internal.sendActionWithCallback('toggleMuteMic', {});
-  }
-  setBeepSound( enabled ){
-    this.internal.sendAction('setBeepSound', { badLanguage: enabled ? 1 : 0 });
-  }
-  playMeme( fileName ){
-    this.internal.sendAction('playMeme', { FileName: fileName });
-  }
-  stopAllMemeSounds(){
-    this.internal.sendAction('stopAllMemeSounds', {});
-  }
-  getMuteMemeForMeStatus(){
-    return this.internal.sendActionWithCallback('getMuteMemeForMeStatus', {}, 'toggleMuteMemeForMe');
-  }
-  toggleMuteMemeForMe(){
-    return this.internal.sendActionWithCallback('toggleMuteMemeForMe', {});
-  }
-  setCurrentVoiceParameter( paramName, paramValue = { maxValue: null, minValue: null, displayNormalized: null, value: null } ){
-    return this.internal.sendActionWithCallback('setCurrentVoiceParameter', { parameterName: paramName, parameterValue: paramValue });
+  setVoiceParam(parameter, value){
+    this.internal.setCurrentVoiceParameter(parameter, { value });
   }
 }
 
