@@ -40,18 +40,17 @@ class VoiceModInternal extends events.EventEmitter {
     // console.log(msg); // For verbose logging
     this.ws.send(JSON.stringify(msg));
   }
-  sendActionWithCallback(action, payload, callback){
+  sendActionWithCallback(action, payload){
     return new Promise((resolve, reject) => {
+      let id = randomUUID();
+
       let msg = {
-        id: this.id,
+        id: id,
         action: action,
         payload: payload
       }
 
-      if(!callback)
-        this.cb[action] = resolve;
-      else
-        this.cb[callback] = resolve;
+      this.cb[id] = resolve;
       
       // console.log(msg); // For verbose logging
       this.ws.send(JSON.stringify(msg));
@@ -77,13 +76,10 @@ class VoiceModInternal extends events.EventEmitter {
         break;
     }
 
-    if(this.cb[data.action]){
-      this.cb[data.action](data.payload);
-      this.cb[data.action] = null;
-    } else if(this.cb[data.actionType]){
-      this.cb[data.actionType](data.actionObject);
-      this.cb[data.actionType] = null;
-    }    
+    if(this.cb[data.id]){
+      this.cb[data.id](data.payload);
+      this.cb[data.id] = null;
+    }  
     
     if(VM_EVENTS.includes(data.action))
       this.emit(data.action, data.payload);
@@ -157,7 +153,7 @@ class VoiceModInternal extends events.EventEmitter {
     this.sendAction('setBeepSound', { badLanguage: enabled ? 1 : 0 });
   }
   playMeme( fileName ){
-    this.sendAction('playMeme', { FileName: fileName });
+    this.sendAction('playMeme', { FileName: fileName, IsKeyDown: true });
   }
   stopAllMemeSounds(){
     this.sendAction('stopAllMemeSounds', {});
