@@ -16,7 +16,7 @@ vm.init().then(async () => {
 })
 ```
 
-## [Documentation](docs/main.md)
+## [Documentation](https://github.com/phaze-the-dumb/voicemod-api/wiki)
 
 # Internal Methods
 
