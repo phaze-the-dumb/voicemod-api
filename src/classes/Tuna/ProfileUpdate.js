@@ -24,7 +24,7 @@ class ProfileUpdate{
     this.social.twitchId = id;
     return this;
   }
-  setSocialTwitch( id ){
+  setSocialTwitter( id ){
     this.social.twitterId = id;
     return this;
   }
@@ -96,6 +96,11 @@ class ProfileUpdate{
       .then(async data => {
         if(data.status === 204){
           this.onSuccess();
+
+          this.profile.username = this.name;
+          this.profile.bio = this.bio;
+
+          this.profile.social = this.social;
         } else{
           let d = await data.json();
           this.onError(new Error(d.message));
