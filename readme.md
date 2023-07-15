@@ -1,7 +1,3 @@
-## This is still WIP
-
-I am working on changing how the api interface works. 
-
 # VoiceMod API
 
 Install:
@@ -16,9 +12,11 @@ const VoiceMod = require('voicemod');
 let vm = new VoiceMod();
 
 vm.init().then(async () => {
-  
+  console.log('UserID: ' + vm.user.id)
 })
 ```
+
+## [Documentation](docs/main.md)
 
 # Internal Methods
 
