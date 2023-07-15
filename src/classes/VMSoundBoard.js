@@ -15,6 +15,7 @@ class VMSoundBoard extends Array{
       this.push(new VMSound(sound, api));
     })
   }
+  
   updateInternal( soundboard ){
     this.id = soundboard.id;
     this.name = soundboard.name;
