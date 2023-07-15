@@ -23,7 +23,6 @@ class VoiceMod{
     this.favouriteVoices = new VMVoiceGroup();
     this.customVoices = new VMVoiceGroup();
     this.newVoices = new VMVoiceGroup();
-    this.enabledVoices = new VMVoiceGroup();
 
     this.currentVoice = new VMVoice(this);
     this.rotaryVoiceExpires = -1;
