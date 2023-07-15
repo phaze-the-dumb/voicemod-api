@@ -7,7 +7,7 @@ Install:
 Usage:
 
 ```js
-const VoiceMod = require('voicemod');
+const { VoiceMod } = require('voicemod');
 
 let vm = new VoiceMod();
 
