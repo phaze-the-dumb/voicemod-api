@@ -1,4 +1,4 @@
-const sharp = require('sharp');
+const sharp = require('sharp'); // Might attempt to write something like this myself using node-canvas eventually.
 
 class VMImage{
   constructor(){
