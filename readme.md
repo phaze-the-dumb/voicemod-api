@@ -1,7 +1,3 @@
-## This is still WIP
-
-I am working on changing how the api interface works. 
-
 # VoiceMod API
 
 Install:
@@ -11,17 +7,20 @@ Install:
 Usage:
 
 ```js
-const VoiceMod = require('voicemod');
+const { VoiceMod } = require('voicemod');
 
 let vm = new VoiceMod();
 
 vm.init().then(async () => {
-  let user = await vm.getUser();
-  console.log(user);
-
-  // Returns user id
+  console.log('UserID: ' + vm.user.id)
 })
 ```
+
+## [Documentation](https://github.com/phaze-the-dumb/voicemod-api/wiki)
+
+# Internal Methods
+
+**Note: these are mainly for developer reference purposes, but you can access them through vm.internal.APIMETHOD() if you need to**
 
 Methods: 
 
@@ -56,12 +55,13 @@ Events:
 - `getAllSoundboard`: [here](https://control-api.voicemod.net/api-reference/#sub-getallsoundboard-operation)
 - `getActiveSoundboardProfile`: [here](https://control-api.voicemod.net/api-reference/#sub-getactivesoundboardprofile-operation)
 - `getMemes`: [here](https://control-api.voicemod.net/api-reference/#sub-getmemes-operation)
-- `voiceChangedEvent`: [here](https://control-api.voicemod.net/api-reference/#sub-voicechangedevent-operation)
+- `voiceLoadedEvent`: [here](https://control-api.voicemod.net/api-reference/#sub-voicechangedevent-operation)
 - `toggleHearMyVoice`: [here](https://control-api.voicemod.net/api-reference/#sub-togglehearmyvoice-operation)
 - `toggleVoiceChanger`: [here](https://control-api.voicemod.net/api-reference/#sub-togglevoicechanger-operation)
 - `toggleBackground`: [here](https://control-api.voicemod.net/api-reference/#sub-togglebackground-operation)
 - `toggleMuteMic`: [here](https://control-api.voicemod.net/api-reference/#sub-togglemutemic-operation)
 - `toggleMuteMemeForMe`: [here](https://control-api.voicemod.net/api-reference/#sub-togglemutememeforme-operation)
+- `voiceParameterUpdated`: No Mention of it in the API reference but it is mentioned [here](https://control-api.voicemod.net/voices/voice-parameters#reacting-the-changes-on-the-ui)
 
 Types: 
 - MemeID: ID of the meme sound
@@ -69,4 +69,4 @@ Types:
 - RandomVoiceSelectionID: Can be one of `"AllVoices"`, `"FreeVoices"`, `"FavoriteVoices"`, `"CustomVoices"`
 - MemeName: Name of the meme
 - ParameterName: Name of the voice parameter
-- ParameterValue: An object containing: `value: Number` and (optionally) `maxValue: Number`, `minValue: Number` and `displayNormalized: Boolean`
+- ParameterValue: An object containing: `value: Number`
