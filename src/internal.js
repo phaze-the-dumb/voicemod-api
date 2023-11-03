@@ -24,7 +24,7 @@ class VoiceModInternal extends events.EventEmitter {
     this.connect();
   }
   connect(){
-    this.ws = new WebSocket('ws://localhost:'+VM_PORTS[this.currentPort]+'/v1');
+    this.ws = new WebSocket('ws://'+this.interface.host+':'+VM_PORTS[this.currentPort]+'/v1');
 
     this.ws.onopen = () => this.onOpen();
     this.ws.onmessage = (...args) => this.onMessage(...args);
@@ -58,7 +58,7 @@ class VoiceModInternal extends events.EventEmitter {
   }
   onOpen(){
     this.opened = true;
-    this.sendAction('registerClient', { clientKey: 'anyClient' });
+    this.sendAction('registerClient', { clientKey: this.interface.apiKey });
   }
   onMessage( msg ){
     let data = JSON.parse(msg.data);
