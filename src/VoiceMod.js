@@ -11,9 +11,12 @@ const VMVoice = require('./classes/VMVoice');
 const VMSoundBoardGroup = require('./classes/VMSoundBoardGroup');
 
 class VoiceMod{
-  constructor(){
+  constructor(host = 'localhost', apiKey = 'anyClient'){
     this.loaded = false;
     this.internal = null;
+
+    this.host = host;
+    this.apiKey = apiKey;
 
     // User APIs
     this.user = new VMUser();
