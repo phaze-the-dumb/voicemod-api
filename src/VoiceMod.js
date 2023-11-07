@@ -54,7 +54,7 @@ class VoiceMod{
           this.rotaryVoiceExpires = Date.now() + rotVoiceTime.remainingTime * 1000;
 
         this.internal.on('voiceLoadedEvent', ( voice ) => {
-          this.currentVoice = this.voices.find(x => x.id === voice.voiceID);
+          this.currentVoice = this.voices.find(x => x.id === voice.voiceId);
           this.currentVoice.parameters = voice.parameters;
         });
 
