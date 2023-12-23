@@ -79,9 +79,9 @@ class VoiceModInternal extends events.EventEmitter {
     if(this.cb[data.id]){
       this.cb[data.id](data.payload);
       this.cb[data.id] = null;
-    }  
-    
-    if(VM_EVENTS.includes(data.action))
+    }
+
+    if(this.listenerCount(data.action))
       this.emit(data.action, data.payload);
   }
   onError(){
