@@ -1,6 +1,6 @@
 {
   "name": "voicemod",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "I am working on changing how the api interface works.",
   "main": "./src/main.js",
   "scripts": {
